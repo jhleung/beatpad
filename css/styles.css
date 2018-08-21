@@ -1,0 +1,12 @@
+.Button {
+  width: 9%;
+  padding-bottom: 9%;
+}
+
+.r2 {
+  transform: translateX(30px);
+}
+
+.r3 {
+  transform: translateX(90px);
+}
