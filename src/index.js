@@ -4,16 +4,11 @@ import ReactDOM from 'react-dom';
 class Button extends React.Component {
   constructor(props) {
     super(props);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-  }
-
-  handleKeyDown(event) {
-    this.props.changeColor(this.props.index);
   }
 
   render() {
     return(
-      <button style={{backgroundColor:this.props.sound.bgColor, width:'9%', paddingBottom:'6%'}} onKeyDown={this.handleKeyDown} onClick={this.handleClick}> {this.props.sound.label} </button>
+      <button style={{backgroundColor:this.props.color, width:'9%', paddingBottom:'6%'}}> {this.props.label} </button>
     );
   }
 }
@@ -22,47 +17,55 @@ class BeatPad extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      r1: [
-        {label: 'q', bgColor: ""}, {label: 'w', bgColor: ""}, {label: 'e', bgColor: ""}, {label: 'r', bgColor: ""}, {label: 't', bgColor: ""},
-        {label: 'y', bgColor: ""}, {label: 'u', bgColor: ""}, {label: 'i', bgColor: ""}, {label: 'o', bgColor: ""}, {label: 'p', bgColor: ""}],
-      r2: [
-        {label: 'a', bgColor: ""}, {label: 's', bgColor: ""}, {label: 'd', bgColor: ""}, {label: 'f', bgColor: ""}, {label: 'g', bgColor: ""},
-        {label: 'h', bgColor: ""}, {label: 'j', bgColor: ""}, {label: 'k', bgColor: ""}, {label: 'l', bgColor: ""}, {label: ';', bgColor: ""}],
-      r3: [
-        {label: 'z', bgColor: ""}, {label: 'x', bgColor: ""}, {label: 'c', bgColor: ""}, {label: 'v', bgColor: ""}, {label: 'b', bgColor: ""},
-        {label: 'n', bgColor: ""}, {label: 'm', bgColor: ""}, {label: ',', bgColor: ""}, {label: '.', bgColor: ""}, {label: '/', bgColor: ""}]
-    }
+      mapLabelToColor : {'q': '', 'w':'', 'e':'', 'r':'', 't':'', 'y':'', 'u':'', 'i':'', 'o':'', 'p':'',
+                        'a': '', 's':'', 'd':'', 'f':'', 'g':'', 'h':'', 'j':'', 'k':'', 'l':'', ';':'',
+                        'z': '', 'x':'', 'c':'', 'v':'', 'b':'', 'n':'', 'm':'', ',':'', '.':'', '/':''}
+    };
 
-    this.changeColor = this.changeColor.bind(this);
-
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
   }
   
-  changeColor(index) {
-    this.state.r1.map(function(sound, i){
-      sound.bgColor = (index == i) ? 'blue' : '';
-    });
-
-    this.state.r2.map(function(sound, i){
-      sound.bgColor = (index == i+10) ? 'blue' : '';
-    });
-
-    this.state.r3.map(function(sound, i){
-      sound.bgColor = (index == i+20) ? 'blue' : '';
-    });
-    this.setState(this.state)
+  componentWillMount(){
+    document.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keyup", this.handleKeyUp);
   }
 
-  // TODO: space betwen buttons, maybe refactor the divs
+  componentWillUnMount(){
+    document.removeEventListener("keydown", this.handleKeyDown);
+    document.removeEventListener("keyup", this.handleKeyUp);
+  }
+
+  handleKeyDown(e) {
+    this.state.mapLabelToColor[e.key] = "blue";
+    this.setState(this.state);
+  }
+
+  handleKeyUp (e) {
+    this.state.mapLabelToColor[e.key] = "";
+    this.setState(this.state);
+  }
+
   render() {
-    const r1List = [this.state.r1.map((sound, i) => <Button changeColor={this.changeColor} sound={sound} index={i}/>)];
-    const r2List = [this.state.r2.map((sound, i) => <Button changeColor={this.changeColor} sound={sound} index={i+10}/>)];
-    const r3List = [this.state.r3.map((sound, i) => <Button changeColor={this.changeColor} sound={sound} index={i+20}/>)];
+    const r1Labels = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'];
+    const r1ButtonList = r1Labels.map((label) => 
+      <Button label={label} color={this.state.mapLabelToColor[label]}/>
+    );
     
+    const r2Labels = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';'];
+    const r2Buttonlist = r2Labels.map((label) => 
+      <Button label={label} color={this.state.mapLabelToColor[label]}/>
+    );
+    
+    const r3Labels = ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'];
+    const r3ButtonList = r3Labels.map((label) => 
+      <Button label={label} color={this.state.mapLabelToColor[label]}/>
+    );
     return(
       <div>
-        <div>{r1List}</div>
-        <div style={{transform:"translateX(10px)"}}>{r2List}</div>
-        <div style={{transform:"translateX(30px)"}}>{r3List}</div>
+        <div>{r1ButtonList}</div>
+        <div style={{transform:"translateX(10px)"}}>{r2Buttonlist}</div>
+        <div style={{transform:"translateX(30px)"}}>{r3ButtonList}</div>
       </div>
     );
   }
