@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require('path')
 
 module.exports = {
   entry: './src/index.js',
@@ -17,6 +18,7 @@ module.exports = {
   output: {
     path: __dirname + '/dist',
     publicPath: '/',
+    path: path.resolve(__dirname, 'dist/assets'),
     filename: 'bundle.js'
   },
   plugins: [

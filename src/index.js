@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as Audio from './audio.js';
 
 class Button extends React.Component {
   constructor(props) {
@@ -17,9 +18,9 @@ class BeatPad extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mapLabelToColor : {'q': '', 'w':'', 'e':'', 'r':'', 't':'', 'y':'', 'u':'', 'i':'', 'o':'', 'p':'',
-                        'a': '', 's':'', 'd':'', 'f':'', 'g':'', 'h':'', 'j':'', 'k':'', 'l':'', ';':'',
-                        'z': '', 'x':'', 'c':'', 'v':'', 'b':'', 'n':'', 'm':'', ',':'', '.':'', '/':''}
+      mapLabelToColor : {'q':'', 'w':'', 'e':'', 'r':'', 't':'', 'y':'', 'u':'', 'i':'', 'o':'', 'p':'',
+                        'a':'', 's':'', 'd':'', 'f':'', 'g':'', 'h':'', 'j':'', 'k':'', 'l':'', ';':'',
+                        'z':'', 'x':'', 'c':'', 'v':'', 'b':'', 'n':'', 'm':'', ',':'', '.':'', '/':''}
     };
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -35,10 +36,11 @@ class BeatPad extends React.Component {
     document.removeEventListener("keydown", this.handleKeyDown);
     document.removeEventListener("keyup", this.handleKeyUp);
   }
-
+  // todo: holding keydown doesnt re-trigger until keyup
   handleKeyDown(e) {
-    this.state.mapLabelToColor[e.key] = "blue";
+    this.state.mapLabelToColor[e.key] = "peachpuff";
     this.setState(this.state);
+    Audio.wow(e.key);
   }
 
   handleKeyUp (e) {
