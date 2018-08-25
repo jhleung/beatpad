@@ -8,8 +8,9 @@ class Button extends React.Component {
   }
 
   render() {
+    // TODO: refactor this absolute monster into an external css/css module if im feeling real cool
     return(
-      <button style={{backgroundColor:this.props.color, width:'9%', paddingBottom:'6%'}}> {this.props.label} </button>
+     <button style={{marginBottom:'1px', marginRight:'1px', borderRadius:10, backgroundColor:this.props.color, width:'8%', paddingTop:'3%', paddingBottom:'3%'}} disabled> {this.props.label} </button>
     );
   }
 }
@@ -38,7 +39,7 @@ class BeatPad extends React.Component {
   }
   // todo: holding keydown doesnt re-trigger until keyup
   handleKeyDown(e) {
-    this.state.mapLabelToColor[e.key] = "peachpuff";
+    this.state.mapLabelToColor[e.key] = '#F5EEF8';
     this.setState(this.state);
     Audio.wow(e.key);
   }
