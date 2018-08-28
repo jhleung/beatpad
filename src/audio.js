@@ -23,11 +23,12 @@ export function wow(key) {
       });
 }
 
-export function roof(track) {
+// TODO: this most likely wont play back in time. there is no scheduling involved
+export function roof(layer) {
   var curr = 0.0;
-  for (var i = 0; i < track.length; i++) {
-    var a = new Audio('./assets/' + sounds[track[i][1]] + '.mp3');
-    top(a, track[i][0]);
+  for (var i = 0; i < layer.length; i++) {
+    var a = new Audio('./assets/' + sounds[layer[i][1]] + '.mp3');
+    top(a, layer[i][0]);
   }
 }
 
@@ -35,11 +36,11 @@ function top(a, t) {
   setTimeout(function(){a.play();}, t);
 }
 
-export function playback(track) {
+export function playback(layer) {
   var start = context.currentTime;
   var source = null;
-  for (var i = 0; i < track.length; i++) {
-    var key = track[i][1];
+  for (var i = 0; i < layer.length; i++) {
+    var key = layer[i][1];
     fetch('./assets/' + sounds[key] + '.mp3')
       .then(response => response.arrayBuffer())
       .then(buffer => context.decodeAudioData(buffer))
