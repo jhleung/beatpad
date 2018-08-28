@@ -22,10 +22,9 @@ class BeatPad extends React.Component {
       mapLabelToColor: {'q':'', 'w':'', 'e':'', 'r':'', 't':'', 'y':'', 'u':'', 'i':'', 'o':'', 'p':'',
                         'a':'', 's':'', 'd':'', 'f':'', 'g':'', 'h':'', 'j':'', 'k':'', 'l':'', ';':'',
                         'z':'', 'x':'', 'c':'', 'v':'', 'b':'', 'n':'', 'm':'', ',':'', '.':'', '/':''},
-      mapLabelToNumPress: {'q':0, 'w':0, 'e':0, 'r':0, 't':0, 'y':0, 'u':0, 'i':0, 'o':0, 'p':0,
-                        'a':0, 's':0, 'd':0, 'f':0, 'g':0, 'h':0, 'j':0, 'k':0, 'l':0, ';':0,
-                        'z':0, 'x':0, 'c':0, 'v':0, 'b':0, 'n':0, 'm':0, ',':0, '.':0, '/':0},
-      recording:  false 
+      playback: [],
+      recording:  false,
+      startRecordTime: null
     };
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
@@ -43,19 +42,32 @@ class BeatPad extends React.Component {
   // todo: holding keydown doesnt re-trigger until keyup
   handleKeyDown(e) {
     if (e.keyCode == 32) {
+      this.state.startRecordTime = new Date();
       this.state.recording  = true;
-      Audio.startRecord();
+      this.setState(this.state);
+      return;
+      //Audio.startRecord();
     }
 
     if (e.keyCode == 13) {
       this.state.recording = false;
-      Audio.stopRecord();
+      Audio.roof(this.state.playback);
+      this.state.playback = [];
+      this.setState(this.state);
+      return;
+      //Audio.stopRecord();
     }
     
-    if (this.state.recording) this.state.mapLabelToNumPress[e.key]+=1;
+    if (this.state.recording) {
+      var currTime = new Date();
+      var elapsedTime = currTime - this.state.startRecordTime;
+      this.state.playback.push([elapsedTime, e.key]);
+    }
+
     this.state.mapLabelToColor[e.key] = '#F5EEF8';
     this.setState(this.state);
-    Audio.wow(e.key);
+    Audio.woah(e.key);
+    //Audio.wow(e.key);
   }
 
   handleKeyUp (e) {

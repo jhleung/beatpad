@@ -2,40 +2,14 @@
 const sounds =  
   { 'q':'ayy', 'w':'damn', 'e':'loof', 'r':'raw', 't':'skrrr', 'y':'uhh', 'u':'woop'};
 
-
 const context = new AudioContext();
-var dest = context.createMediaStreamDestination();
-var mediaRecorder = new MediaRecorder(dest.stream);
 
-var chunks = [];
-
-mediaRecorder.ondataavailable = function(e) {
-  chunks.push(e.data);
-};
-
-mediaRecorder.onstop = function(e) {
-  alert("fuck");
-  var blob = new Blob(chunks);
-  var fileReader = new FileReader();
-  fileReader.onload = function(e) {
-    alert("fuckkkk");
-    context.decodeAudioData(new Uint8Array(fileReader.result))
-    .then(buf => 
-      {
-        alert(buf);
-        const source = context.createBufferSource();
-        source.buffer = buf;
-        source.connect(context.destination);
-        source.start();
-      });
-  };
-  fileReader.readAsArrayBuffer(blob);
-  //var audioTag = document.createElement('audio');
-  //document.querySelector("audio").src = URL.createObjectURL(blob);
-};
+export function woah(key) {
+  var a = new Audio('./assets/' + sounds[key] + '.mp3');
+  a.play();
+}
 
 export function wow(key) {
-  var buffer = null;
   fetch('./assets/' + sounds[key] + '.mp3')
   // when we get the asynchronous response, convert to an ArrayBuffer
     .then(response => response.arrayBuffer())
@@ -49,25 +23,34 @@ export function wow(key) {
       });
 }
 
-export function startRecord() {
-  mediaRecorder.start();
+export function roof(track) {
+  var curr = 0.0;
+  for (var i = 0; i < track.length; i++) {
+    var a = new Audio('./assets/' + sounds[track[i][1]] + '.mp3');
+    top(a, track[i][0]);
+  }
 }
 
-export function stopRecord() {
-  mediaRecorder.stop();
+function top(a, t) {
+  setTimeout(function(){a.play();}, t);
 }
 
-export function playback(key) {
-  var buffer = null;
-  fetch('./assets/' + sounds[key] + '.mp3')
-  // when we get the asynchronous response, convert to an ArrayBuffer
-    .then(response => response.arrayBuffer())
-    .then(buffer => context.decodeAudioData(buffer))
-    .then(decoded => 
-      {
-        const source = context.createBufferSource();
-        source.buffer = decoded;
-        source.connect(context.destination);
-        source.start();
-      });
+export function playback(track) {
+  var start = context.currentTime;
+  var source = null;
+  for (var i = 0; i < track.length; i++) {
+    var key = track[i][1];
+    fetch('./assets/' + sounds[key] + '.mp3')
+      .then(response => response.arrayBuffer())
+      .then(buffer => context.decodeAudioData(buffer))
+      .then(decoded => 
+        {
+          source = context.createBufferSource();
+          source.buffer = decoded;
+          source.connect(context.destination);
+          source.start(context.currentTime + i);
+        });
+  }
 }
+
+
